@@ -1,17 +1,5 @@
 services:
-  learnhub:
-    build: .
-    restart: always
-
-    container_name: learnhub_app
-
-    ports:
-      - "8000:80000"
-    environment:
-      - ENV=development
-    depends_on:
-      - database
-
+  
   database:
     image: postgres:17
 
@@ -23,12 +11,10 @@ services:
       POSTGRES_PASSWORD: g8keeper
       POSTGRES_DB: learnhub_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - learnhub_data:/var/lib/postgresql/data
 volumes:
   learnhub_data:
-
-  #docker compose up --build
 
   #docker compose up --build
