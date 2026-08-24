@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+
+#pip install 0r requirement.txt

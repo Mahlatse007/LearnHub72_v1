@@ -1,0 +1,22 @@
+#Visual Studio Code
+.vscode/
+.vs/
+
+#Environment files
+.env
+
+#Node modules
+node_modules/
+
+#Log files
+*.log
+
+#Compiled source #
+dist/
+
+#Virtual environment
+.venv/   
+
+#Python
+__pycache__/
+*.py[cod]
