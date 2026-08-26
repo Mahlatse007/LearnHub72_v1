@@ -100,4 +100,4 @@ document.querySelectorAll('.group').forEach(card => {
     });
 });
 
-console.log('Portfolio website loaded successfully!');
+#console.log('Website loaded successfully!');
