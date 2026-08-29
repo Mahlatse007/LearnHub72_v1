@@ -1,4 +1,8 @@
 fastapi
 uvicorn
+sqlalchemy
+psycopg2-binary
+psycopg2
+python-dotenv
 
-#pip install 0r requirement.txt
+#pip install -r requirement.txt
