@@ -4,6 +4,7 @@
 
 #Environment files
 .env
+.env/
 
 #Node modules
 node_modules/
