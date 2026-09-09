@@ -100,4 +100,20 @@ document.querySelectorAll('.group').forEach(card => {
     });
 });
 
-#console.log('Website loaded successfully!');
+//GETTING USERS FROM API
+async function getUsers() {
+    try {
+        const response = await fetch(
+            "http://127.0.0.1:8000/api/users"
+        );
+
+        const users = await response.json();
+
+        console.log(users);
+
+    } catch (error) {
+        console.error("Error getting users:", error);
+    }
+}
+
+getUsers();
