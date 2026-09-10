@@ -5,4 +5,4 @@ psycopg2-binary
 psycopg2
 python-dotenv
 
-#pip install -r requirement.txt
+#pip install -r requirements.txt

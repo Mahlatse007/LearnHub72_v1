@@ -1,15 +1,15 @@
 from fastapi import FastAPI
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
-from app.database import engine
+from backend.app.database import engine
 from sqlalchemy import text
-from app.schemas import UserCreate
+from backend.app.schemas import UserCreate
 
 router = APIRouter(prefix="/api")
 
 @router.get("/home")
 def home():
-    return FileResponse("app/index.html")
+    return FileResponse("frontend/index.html")
 
 
 # =========================

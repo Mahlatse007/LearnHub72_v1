@@ -101,3 +101,79 @@ document.querySelectorAll('.group').forEach(card => {
 });
 
 #console.log('Website loaded successfully!');
+
+//
+//
+// login and registration form handling
+//
+//
+const API_URL = 'http://localhost:3000/api/auth';
+const form = document.getElementById('authForm');
+const formTitle = document.getElementById('formTitle');
+const submitBtn = document.getElementById('submitBtn');
+const toggleBtn = document.getElementById('toggleBtn');
+const toggleText = document.getElementById('toggleText');
+const message = document.getElementById('message');
+
+let isLoginMode = true;
+
+// Toggle between login and register
+toggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    isLoginMode = !isLoginMode;
+    formTitle.textContent = isLoginMode ? 'Login' : 'Register';
+    submitBtn.textContent = isLoginMode ? 'Login' : 'Register';
+    toggleText.textContent = isLoginMode ? "Don't have an account?" : "Already have an account?";
+    toggleBtn.textContent = isLoginMode ? 'Register' : 'Login';
+    message.textContent = '';
+    message.className = '';
+});
+
+// Handle form submit
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    message.textContent = '';
+    message.className = '';
+    submitBtn.disabled = true;
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    const endpoint = isLoginMode ? '/login' : '/register';
+    const url = API_URL + endpoint;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Something went wrong');
+        }
+
+        if (isLoginMode) {
+            // Save token and redirect
+            localStorage.setItem('token', data.token);
+            message.textContent = 'Login successful! Redirecting...';
+            message.className = 'success';
+            setTimeout(() => {
+                window.location.href = '/dashboard.html'; // change to your protected page
+            }, 1000);
+        } else {
+            message.textContent = 'Account created! Please login.';
+            message.className = 'success';
+            // Switch to login mode
+            toggleBtn.click();
+        }
+
+    } catch (err) {
+        message.textContent = err.message;
+        message.className = 'error';
+    } finally {
+        submitBtn.disabled = false;
+    }
+});
