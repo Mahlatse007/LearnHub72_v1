@@ -56,7 +56,6 @@ def create_user(user: UserCreate):
 
     return dict(new_user._mapping)
 
-
 # =========================
 # TUTORS
 # =========================
