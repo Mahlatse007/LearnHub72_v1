@@ -1,16 +1,28 @@
 from fastapi import FastAPI
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
-from backend.app.database import engine
+from database import engine
 from sqlalchemy import text
-from backend.app.schemas import UserCreate
+from schemas import UserCreate
+from pathlib import Path
+from fastapi.responses import FileResponse
 
-router = APIRouter(prefix="/api")
+BASE_DIR = Path(__file__).resolve().parents[2]
+FRONTEND_DIR = BASE_DIR / "frontend"
+
+router = APIRouter()
 
 @router.get("/home")
 def home():
-    return FileResponse("frontend/index.html")
+    return FileResponse(FRONTEND_DIR / "index.html")
 
+@router.get("/login")
+def login():
+    return FileResponse(FRONTEND_DIR / "login.html")
+
+@router.get("/admin")
+def admin():
+    return FileResponse(FRONTEND_DIR / "admin.html")
 
 # =========================
 # USERS
