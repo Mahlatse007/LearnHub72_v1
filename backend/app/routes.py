@@ -24,6 +24,11 @@ def login():
 def admin():
     return FileResponse(FRONTEND_DIR / "admin.html")
 
+@router.get("/register")
+def register():
+    return FileResponse(FRONTEND_DIR / "register.html")
+
+
 # =========================
 # USERS
 # =========================

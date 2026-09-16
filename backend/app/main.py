@@ -27,8 +27,5 @@ def info():
         }
 
 
-
-
-
 # Run the application using the command below in your terminal
 # uvicorn app.Main:app --reload
