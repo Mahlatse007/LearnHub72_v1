@@ -74,6 +74,72 @@ def create_user(user: UserCreate):
     return dict(new_user._mapping)
 
 # =========================
+# REGISTER USERS
+# =========================
+
+
+@router.post("/users")
+def create_user(user: UserCreate):
+
+    with engine.connect() as connection:
+
+        result = connection.execute(
+            text("""
+                INSERT INTO users (
+                    firstname,
+                    lastname,
+                    idnumber,
+                    email,
+                    role,
+                    username,
+                    address,
+                    contactnumber,
+                    password
+                )
+                VALUES (
+                    :firstname,
+                    :lastname,
+                    :idnumber,
+                    :email,
+                    :role,
+                    :username,
+                    :address,
+                    :contactnumber,
+                    :password
+                )
+                RETURNING
+                    id,
+                    firstname,
+                    lastname,
+                    idnumber,
+                    email,
+                    role,
+                    username,
+                    address,
+                    contactnumber,
+                    is_active
+            """),
+            {
+                "firstname": user.firstname,
+                "lastname": user.lastname,
+                "idnumber": user.idnumber,
+                "email": user.email,
+                "role": user.role,
+                "username": user.username,
+                "address": user.address,
+                "contactnumber": user.contactnumber,
+                "password": user.password
+            }
+        )
+
+        new_user = result.fetchone()
+
+        connection.commit()
+
+    return dict(new_user._mapping)
+
+
+# =========================
 # TUTORS
 # =========================
 

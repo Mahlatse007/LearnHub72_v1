@@ -100,7 +100,6 @@ document.querySelectorAll('.group').forEach(card => {
     });
 });
 
-<<<<<<< HEAD:frontend/script.js
 #console.log('Website loaded successfully!');
 
 //
@@ -178,7 +177,6 @@ form.addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
     }
 });
-=======
 //GETTING USERS FROM API
 async function getUsers() {
     try {
@@ -196,4 +194,3 @@ async function getUsers() {
 }
 
 getUsers();
->>>>>>> 79defc265bc89c9dd1254a3eeb9da48d18bcb93d:app/script.js
