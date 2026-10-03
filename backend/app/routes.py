@@ -50,16 +50,20 @@ def create_user(user: UserCreate):
 
         result = connection.execute(
             text("""
-                INSERT INTO users (firstname, lastname, email, password, role)
-                VALUES (:firstname, :lastname, :email, :password, :role)
-                RETURNING id, firstname, lastname, email, role, is_active
+                INSERT INTO users (first_name, last_name, id_number, email, password, role, username, address, contact_numbers)
+                VALUES (:firstname, :lastname, :idnumber, :email, :password, :role, :username, :address, :contactnumber)
+                RETURNING id, first_name, last_name, id_number, email, role, username, address, contact_numbers
             """),
             {
                 "firstname": user.firstname,
                 "lastname": user.lastname,
+                "idnumber": user.idnumber,
                 "email": user.email,
                 "password": user.password,
-                "role": user.role
+                "role": user.role,
+                "username": user.username,
+                "address": user.address,
+                "contactnumber": user.contactnumber     
             }
         )
 
