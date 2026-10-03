@@ -91,20 +91,13 @@ async function registerUser(event) {
     // Stop the normal HTML form submission
     event.preventDefault();
 
-
     // Get passwords
-    const password =
-        document.getElementById("password").value;
-
-    const confirmPassword =
-        document.getElementById("confirmPassword").value;
-
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
 
     // Check that passwords match
     if (password !== confirmPassword) {
-
         alert("Passwords do not match.");
-
         return;
     }
 
@@ -112,38 +105,16 @@ async function registerUser(event) {
     // Collect registration data
     const user = {
 
-        firstname:
-            document.getElementById("firstname").value,
-
-        lastname:
-            document.getElementById("lastname").value,
-
-        idnumber:
-            document.getElementById("idnumber").value,
-
-        email:
-            document.getElementById("email").value,
-
-        role:
-            document.getElementById("role").value,
-
-        username:
-            document.getElementById("username").value,
-
-        address:
-            document.getElementById("address").value,
-
-        contactnumber:
-            document.getElementById("contactnumber").value,
-
-        password:
-            password
+        firstname: document.getElementById("firstname").value,
+        lastname: document.getElementById("lastname").value,
+        idnumber: document.getElementById("idnumber").value,
+        email: document.getElementById("email").value,
+        role: document.getElementById("role").value,
+        username: document.getElementById("username").value,
+        address: document.getElementById("address").value,
+        contactnumber: document.getElementById("contactnumber").value,
+        password: password
     };
-
-
-    // Show data in browser console
-    console.log("Sending user:", user);
-
 
     try {
 
@@ -152,7 +123,6 @@ async function registerUser(event) {
             "http://127.0.0.1:8000/users/add-users",
             {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -161,50 +131,105 @@ async function registerUser(event) {
             }
         );
 
-
+        
         // Get API response
         const data = await response.json();
-
-
-        console.log("API response:", data);
-
+        //console.log("API response:", data);
 
         // Check whether registration succeeded
         if (!response.ok) {
-
-            console.error(
-                "Registration failed:",
-                data
-            );
-
+            console.error("Registration failed:", data);
             alert("Registration failed.");
-
             return;
+        } else {
+            // Success
+            alert("Registration successful!");
         }
-
-
-        // Success
-        alert("Registration successful!");
-
 
         // Clear form
         document.querySelector("form").reset();
 
 
     } catch (error) {
-
-        console.error(
-            "Error registering user:",
-            error
-        );
-
-        alert(
-            "Could not connect to the LearnHub API."
-        );
-    }
+        console.error("Error registering user:", error);
+        alert("Could not connect to the LearnHub API.");
+    }       
 }
 
+// =================================
+// Login 
+// =================================
 
+async function loginUser(event) {
+
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const loginData = {
+        email: email,
+        password: password
+    };
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/login",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(loginData)
+            }
+        );
+
+        const data = await response.json();
+
+        console.log("API response:", data);
+
+        if (!response.ok) {
+
+            alert("Login failed.");
+
+            return;
+        }
+
+        if (data.message === "User does not exist") {
+
+            alert("User does not exist.");
+
+            return;
+        }
+
+        if (data.message === "Incorrect password") {
+
+            alert("Incorrect password.");
+
+            return;
+        }
+
+        if (data.message === "Login successful") {
+
+            alert("Login successful!");
+
+            console.log("Logged in user:", data.user);
+
+            // Later we will redirect based on role.
+            // window.location.href = "/student.html";
+        }
+
+    } catch (error) {
+
+        console.error("Error logging in:", error);
+
+        alert("Could not connect to LearnHub API.");
+    }
+}
+ 
 // ================================
 // Get Users
 // ================================

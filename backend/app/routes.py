@@ -6,6 +6,7 @@ from sqlalchemy import text
 from schemas import UserCreate
 from pathlib import Path
 from fastapi.responses import FileResponse
+from schemas import UserLogin
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 FRONTEND_DIR = BASE_DIR / "frontend"
@@ -43,6 +44,11 @@ def get_users():
 
     return users
 
+
+# =========================
+# REGISTER USERS
+# =========================
+
 @router.post("/users/add-users")
 def create_user(user: UserCreate):
 
@@ -75,73 +81,54 @@ def create_user(user: UserCreate):
 
         connection.commit()
 
-    return dict(new_user._mapping)
-
-# =========================
-# REGISTER USERS
-# =========================
-
-
-@router.post("/users")
-def create_user(user: UserCreate):
+#Fetching a specific user from the database
+@router.post("/login")
+def login_user(user: UserLogin):
 
     with engine.connect() as connection:
 
         result = connection.execute(
             text("""
-                INSERT INTO users (
-                    firstname,
-                    lastname,
-                    idnumber,
-                    email,
-                    role,
-                    username,
-                    address,
-                    contactnumber,
-                    password
-                )
-                VALUES (
-                    :firstname,
-                    :lastname,
-                    :idnumber,
-                    :email,
-                    :role,
-                    :username,
-                    :address,
-                    :contactnumber,
-                    :password
-                )
-                RETURNING
+                SELECT
                     id,
-                    firstname,
-                    lastname,
-                    idnumber,
+                    first_name,
+                    last_name,
                     email,
                     role,
                     username,
-                    address,
-                    contactnumber,
-                    is_active
+                    is_active,
+                    password
+                FROM users
+                WHERE email = :email
             """),
             {
-                "firstname": user.firstname,
-                "lastname": user.lastname,
-                "idnumber": user.idnumber,
-                "email": user.email,
-                "role": user.role,
-                "username": user.username,
-                "address": user.address,
-                "contactnumber": user.contactnumber,
-                "password": user.password
+                "email": user.email
             }
         )
 
-        new_user = result.fetchone()
+        existing_user = result.fetchone()
 
-        connection.commit()
+    if existing_user is None:
+        return {
+            "message": "User does not exist"
+        }
 
-    return dict(new_user._mapping)
+    if existing_user.password != user.password:
+        return {
+            "message": "Incorrect password"
+        }
 
+    return {
+        "message": "Login successful",
+        "user": {
+            "id": existing_user.id,
+            "first_name": existing_user.first_name,
+            "last_name": existing_user.last_name,
+            "email": existing_user.email,
+            "role": existing_user.role,
+            "username": existing_user.username,
+            "is_active": existing_user.is_active
+        }
 
 # =========================
 # TUTORS
