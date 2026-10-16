@@ -7,6 +7,7 @@ from schemas import UserCreate
 from pathlib import Path
 from fastapi.responses import FileResponse
 from schemas import UserLogin
+from fastapi import HTTPException
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 FRONTEND_DIR = BASE_DIR / "frontend"
@@ -77,9 +78,6 @@ def create_user(user: UserCreate):
 
         connection.commit()                                                                                                                                 
 
-        new_user = result.fetchone()
-
-        connection.commit()
 
 #Fetching a specific user from the database
 @router.post("/login")
@@ -129,6 +127,7 @@ def login_user(user: UserLogin):
             "username": existing_user.username,
             "is_active": existing_user.is_active
         }
+    }
 
 # =========================
 # TUTORS

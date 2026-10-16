@@ -167,10 +167,12 @@ async function loginUser(event) {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const loginData = {
-        email: email,
-        password: password
-    };
+    const button = document.getElementById("login-button");
+    const message = document.getElementById("login-message");
+
+    button.disabled = true;
+    message.textContent = "Checking your details...";
+    message.style.color = "";
 
     try {
 
@@ -183,43 +185,32 @@ async function loginUser(event) {
                     "Content-Type": "application/json"
                 },
 
-                body: JSON.stringify(loginData)
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
             }
         );
 
         const data = await response.json();
 
-        console.log("API response:", data);
-
         if (!response.ok) {
-
-            alert("Login failed.");
-
+            message.textContent = data.detail || "Login failed.";
+            message.style.color = "red";
             return;
         }
 
-        if (data.message === "User does not exist") {
+        message.textContent = "Login successful!";
+        message.style.color = "green";
 
-            alert("User does not exist.");
+        console.log("Logged-in user:", data.user);
 
-            return;
-        }
-
-        if (data.message === "Incorrect password") {
-
-            alert("Incorrect password.");
-
-            return;
-        }
-
-        if (data.message === "Login successful") {
-
-            alert("Login successful!");
-
-            console.log("Logged in user:", data.user);
-
-            // Later we will redirect based on role.
-            // window.location.href = "/student.html";
+        if (data.user.role === "Student") {
+            window.location.href = "/student";
+        } else if (data.user.role === "Tutor") {
+            window.location.href = "/tutor";
+        } else if (data.user.role === "Admin") {
+            window.location.href = "/admin";
         }
 
     } catch (error) {
