@@ -32,6 +32,130 @@ document.querySelectorAll("#mobile-menu a").forEach(link => {
 
 });
 
+// ================================
+// HOME
+// ================================
+
+
+    
+        // Render Lucide icons.
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+
+        // Current year.
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile navigation.
+        const menuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+            menuButton.setAttribute('aria-expanded', 'false');
+            menuButton.setAttribute('aria-label', 'Open navigation menu');
+            menuButton.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+            if (window.lucide) lucide.createIcons();
+        }
+
+        menuButton.addEventListener('click', function () {
+            const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                mobileMenu.classList.remove('hidden');
+                menuButton.setAttribute('aria-expanded', 'true');
+                menuButton.setAttribute('aria-label', 'Close navigation menu');
+                menuButton.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+                if (window.lucide) lucide.createIcons();
+            }
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(function (link) {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // FAQ accordion.
+        document.querySelectorAll('.faq-toggle').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const answer = button.nextElementSibling;
+                const icon = button.querySelector('.faq-icon');
+                const willOpen = button.getAttribute('aria-expanded') !== 'true';
+
+                button.setAttribute('aria-expanded', String(willOpen));
+                answer.hidden = !willOpen;
+
+                if (icon) {
+                    icon.setAttribute('data-lucide', willOpen ? 'minus' : 'plus');
+                    if (window.lucide) lucide.createIcons();
+                }
+            });
+        });
+
+        // Preselect a service when a service card link is clicked.
+        document.querySelectorAll('[data-service]').forEach(function (link) {
+            link.addEventListener('click', function () {
+                const serviceSelect = document.getElementById('service');
+                const requestedService = link.getAttribute('data-service');
+                const matchingOption = Array.from(serviceSelect.options).find(
+                    option => option.text === requestedService
+                );
+
+                if (matchingOption) serviceSelect.value = matchingOption.value;
+            });
+        });
+
+        // Prevent placeholder social links from navigating to the top.
+        document.querySelectorAll('[data-social-placeholder]').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                alert('Add your official Devanty social profile URL to activate this link.');
+            });
+        });
+
+        // Demo contact form: opens an email draft.
+        // Replace this address with your official business email.
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+        const recipient = 'mahlatsemakgati72@gmail.com';
+
+        contactForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (!contactForm.reportValidity()) return;
+
+            const data = new FormData(contactForm);
+
+            const subject = 'Devanty Technologies enquiry: ' + data.get('service');
+
+            const body = [
+                'New enquiry for Devanty Technologies',
+                '',
+                'Name: ' + data.get('name'),
+                'Company / organisation: ' + (data.get('company') || 'Not provided'),
+                'Email: ' + data.get('email'),
+                'Phone: ' + (data.get('phone') || 'Not provided'),
+                'Service: ' + data.get('service'),
+                'Estimated budget: ' + (data.get('budget') || 'Not specified'),
+                '',
+                'Project details:',
+                data.get('message'),
+                '',
+                'The sender agreed to the enquiry privacy statement.'
+            ].join('\n');
+
+            const mailto = 'mailto:' + recipient
+                + '?subject=' + encodeURIComponent(subject)
+                + '&body=' + encodeURIComponent(body);
+
+            formStatus.textContent =
+                'Opening your email application. Please review and send the draft there.';
+
+            window.location.href = mailto;
+        });
+    
+
 
 // ================================
 // Smooth Scrolling
@@ -214,10 +338,11 @@ async function loginUser(event) {
         }
 
     } catch (error) {
-
-        console.error("Error logging in:", error);
-
-        alert("Could not connect to LearnHub API.");
+        console.error("Login error:", error);
+        message.textContent = "Cannot connect to LearnHub. Check that the API is running.";
+        message.style.color = "red";
+    } finally {
+        button.disabled = false;
     }
 }
  

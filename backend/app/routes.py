@@ -16,6 +16,10 @@ router = APIRouter()
 
 @router.get("/home")
 def home():
+    return FileResponse(FRONTEND_DIR / "home.html")
+
+@router.get("/learnhub")
+def learnhub():
     return FileResponse(FRONTEND_DIR / "index.html")
 
 @router.get("/login")
@@ -87,15 +91,7 @@ def login_user(user: UserLogin):
 
         result = connection.execute(
             text("""
-                SELECT
-                    id,
-                    first_name,
-                    last_name,
-                    email,
-                    role,
-                    username,
-                    is_active,
-                    password
+                SELECT id, first_name, last_name, email, role, username, is_active, password
                 FROM users
                 WHERE email = :email
             """),
