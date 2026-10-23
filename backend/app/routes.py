@@ -34,7 +34,13 @@ def admin():
 def register():
     return FileResponse(FRONTEND_DIR / "register.html")
 
+@router.get("/student")
+def student():
+    return FileResponse(FRONTEND_DIR / "student.html")
 
+@router.get("/tutor")
+def tutor():
+    return FileResponse(FRONTEND_DIR / "tutor.html")
 # =========================
 # USERS
 # =========================
