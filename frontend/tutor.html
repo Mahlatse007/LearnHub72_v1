@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LearnHub | Tutor Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      body {
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+      .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #64748b;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .sidebar-link:hover,
+      .sidebar-link.active {
+        background: #eef2ff;
+        color: #4f46e5;
+      }
+      .panel {
+        display: none;
+      }
+      .panel.active {
+        display: block;
+      }
+      .field {
+        width: 100%;
+        padding: 11px 13px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        outline: none;
+        background: white;
+      }
+      .field:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px #eef2ff;
+      }
+      .btn {
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: #4f46e5;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #4338ca;
+      }
+      .btn-light {
+        background: #eef2ff;
+        color: #4338ca;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800">
+    <div class="min-h-screen lg:flex">
+      <aside
+        id="sidebar"
+        class="hidden lg:flex lg:w-64 bg-white border-r border-slate-200 p-5 flex-col"
+      >
+        <a href="#" class="flex items-center gap-3 px-2 mb-9">
+          <div
+            class="w-11 h-11 rounded-2xl bg-indigo-600 text-white grid place-items-center"
+          >
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <div>
+            <div class="text-xl font-extrabold tracking-tight">
+              Learn<span class="text-indigo-600">Hub</span>
+            </div>
+            <div class="text-xs text-slate-400">Tutor workspace</div>
+          </div>
+        </a>
+        <div
+          class="text-xs uppercase tracking-widest text-slate-400 font-bold px-3 mb-3"
+        >
+          Workspace
+        </div>
+        <nav class="space-y-1">
+          <button class="sidebar-link active w-full" data-panel="dashboard">
+            <i data-lucide="layout-dashboard" size="18"></i> Dashboard
+          </button>
+          <button class="sidebar-link w-full" data-panel="bookings">
+            <i data-lucide="calendar-days" size="18"></i> Session bookings
+            <span
+              id="bookingBadge"
+              class="ml-auto text-xs bg-indigo-100 text-indigo-700 rounded-full px-2 py-1"
+              >0</span
+            >
+          </button>
+          <button class="sidebar-link w-full" data-panel="students">
+            <i data-lucide="users" size="18"></i> My students
+          </button>
+          <button class="sidebar-link w-full" data-panel="subjects">
+            <i data-lucide="book-open" size="18"></i> My subjects
+          </button>
+          <button class="sidebar-link w-full" data-panel="availability">
+            <i data-lucide="clock" size="18"></i> Availability
+          </button>
+          <button class="sidebar-link w-full" data-panel="profile">
+            <i data-lucide="user-round" size="18"></i> Tutor profile
+          </button>
+        </nav>
+        <div class="mt-auto bg-indigo-50 rounded-2xl p-4">
+          <div class="font-bold text-indigo-900">Help your students grow</div>
+          <p class="text-sm text-indigo-700 mt-1 mb-3">
+            Keep your subjects and availability up to date.
+          </p>
+          <button class="btn btn-light w-full" onclick="showPanel('profile')">
+            Update profile
+          </button>
+        </div>
+      </aside>
+
+      <main class="flex-1 min-w-0">
+        <header
+          class="bg-white border-b border-slate-200 px-5 md:px-8 py-4 flex items-center justify-between gap-4"
+        >
+          <div class="flex items-center gap-3">
+            <button
+              class="lg:hidden p-2 rounded-lg border"
+              onclick="
+                document.getElementById('mobileNav').classList.toggle('hidden')
+              "
+              aria-label="Open menu"
+            >
+              <i data-lucide="menu"></i>
+            </button>
+            <div>
+              <div class="text-sm text-slate-400">
+                LearnHub / Tutor workspace
+              </div>
+              <h1 id="pageTitle" class="font-extrabold text-xl md:text-2xl">
+                Dashboard
+              </h1>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              onclick="showPanel('bookings')"
+              class="relative p-2 rounded-xl hover:bg-slate-100"
+              aria-label="Bookings"
+            >
+              <i data-lucide="bell"></i
+              ><span
+                id="noticeDot"
+                class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500"
+              ></span>
+            </button>
+            <div
+              class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center font-extrabold"
+              id="avatar"
+            >
+              T
+            </div>
+            <div class="hidden sm:block">
+              <div id="headerName" class="font-bold text-sm">Tutor Name</div>
+              <div class="text-xs text-slate-400">Tutor account</div>
+            </div>
+          </div>
+        </header>
+
+        <div
+          id="mobileNav"
+          class="hidden lg:hidden bg-white border-b p-3 grid grid-cols-2 gap-2"
+        >
+          <button class="sidebar-link" data-panel="dashboard">Dashboard</button
+          ><button class="sidebar-link" data-panel="bookings">Bookings</button>
+          <button class="sidebar-link" data-panel="students">My students</button
+          ><button class="sidebar-link" data-panel="subjects">Subjects</button>
+          <button class="sidebar-link" data-panel="availability">
+            Availability</button
+          ><button class="sidebar-link" data-panel="profile">Profile</button>
+        </div>
+
+        <div class="p-5 md:p-8 max-w-7xl mx-auto">
+          <section id="panel-dashboard" class="panel active space-y-7">
+            <div
+              class="rounded-3xl bg-gradient-to-r from-indigo-700 to-violet-600 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between gap-5"
+            >
+              <div>
+                <div class="text-indigo-100 text-sm font-semibold mb-2">
+                  YOUR TEACHING SPACE
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold">
+                  Welcome back, <span id="welcomeName">Tutor</span>!
+                </h2>
+                <p class="text-indigo-100 mt-2 max-w-xl">
+                  Manage your sessions, connect with learners, and make every
+                  lesson count.
+                </p>
+                <div class="flex flex-wrap gap-3 mt-5">
+                  <button
+                    onclick="showPanel('bookings')"
+                    class="btn bg-white text-indigo-700"
+                  >
+                    View bookings</button
+                  ><button
+                    onclick="showPanel('availability')"
+                    class="btn bg-indigo-500 text-white"
+                  >
+                    Set availability
+                  </button>
+                </div>
+              </div>
+              <div
+                class="hidden md:grid place-items-center w-28 h-28 rounded-3xl bg-white/10"
+              >
+                <i data-lucide="graduation-cap" size="54"></i>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between text-slate-500 text-sm">
+                  <span>Total bookings</span
+                  ><i data-lucide="calendar-check"></i>
+                </div>
+                <div id="statBookings" class="text-3xl font-extrabold mt-3">
+                  0
+                </div>
+                <div class="text-xs text-slate-400 mt-1">
+                  All recorded sessions
+                </div>
+              </div>
+              <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between text-slate-500 text-sm">
+                  <span>Pending requests</span><i data-lucide="hourglass"></i>
+                </div>
+                <div id="statPending" class="text-3xl font-extrabold mt-3">
+                  0
+                </div>
+                <div class="text-xs text-slate-400 mt-1">
+                  Need your attention
+                </div>
+              </div>
+              <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between text-slate-500 text-sm">
+                  <span>Confirmed sessions</span
+                  ><i data-lucide="calendar-check-2"></i>
+                </div>
+                <div id="statConfirmed" class="text-3xl font-extrabold mt-3">
+                  0
+                </div>
+                <div class="text-xs text-slate-400 mt-1">Accepted bookings</div>
+              </div>
+              <div class="bg-white border rounded-2xl p-5">
+                <div class="flex justify-between text-slate-500 text-sm">
+                  <span>Subjects listed</span><i data-lucide="book-open"></i>
+                </div>
+                <div id="statSubjects" class="text-3xl font-extrabold mt-3">
+                  0
+                </div>
+                <div class="text-xs text-slate-400 mt-1">
+                  On your tutor profile
+                </div>
+              </div>
+            </div>
+
+            <div class="grid xl:grid-cols-3 gap-6">
+              <div class="xl:col-span-2 bg-white border rounded-2xl p-5 md:p-6">
+                <div class="flex items-center justify-between gap-3 mb-5">
+                  <div>
+                    <h3 class="font-extrabold text-lg">Recent bookings</h3>
+                    <p class="text-sm text-slate-400">
+                      The latest session requests from students
+                    </p>
+                  </div>
+                  <button
+                    onclick="showPanel('bookings')"
+                    class="text-sm text-indigo-600 font-bold"
+                  >
+                    View all →
+                  </button>
+                </div>
+                <div id="recentBookings"></div>
+              </div>
+              <div class="bg-white border rounded-2xl p-5 md:p-6">
+                <h3 class="font-extrabold text-lg">Your teaching profile</h3>
+                <p class="text-sm text-slate-400 mt-1">What students can see</p>
+                <div class="mt-5 flex items-center gap-3">
+                  <div
+                    id="profileAvatar"
+                    class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-700 grid place-items-center text-xl font-extrabold"
+                  >
+                    T
+                  </div>
+                  <div>
+                    <div id="profileCardName" class="font-bold">Tutor Name</div>
+                    <div id="profileCardRate" class="text-sm text-slate-500">
+                      R200 / hour
+                    </div>
+                  </div>
+                </div>
+                <p id="profileCardBio" class="text-sm text-slate-500 mt-4">
+                  Add a short introduction to tell students about yourself.
+                </p>
+                <div
+                  id="profileSubjectTags"
+                  class="flex flex-wrap gap-2 mt-4"
+                ></div>
+                <button
+                  onclick="showPanel('profile')"
+                  class="btn btn-light w-full mt-5"
+                >
+                  Edit profile
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section id="panel-bookings" class="panel space-y-5">
+            <div
+              class="flex flex-col sm:flex-row sm:items-end justify-between gap-3"
+            >
+              <div>
+                <h2 class="text-2xl font-extrabold">Session bookings</h2>
+                <p class="text-slate-500 mt-1">
+                  Review, confirm, or decline student requests.
+                </p>
+              </div>
+              <button class="btn btn-light" onclick="refreshAll()">
+                Refresh list
+              </button>
+            </div>
+            <div
+              class="bg-white border rounded-2xl p-4 flex flex-col sm:flex-row gap-3"
+            >
+              <input
+                id="bookingSearch"
+                class="field"
+                placeholder="Search student or subject..."
+                oninput="renderBookings()"
+              /><select
+                id="bookingFilter"
+                class="field sm:max-w-48"
+                onchange="renderBookings()"
+              >
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="declined">Declined</option>
+              </select>
+            </div>
+            <div class="bg-white border rounded-2xl overflow-hidden">
+              <div id="bookingList"></div>
+            </div>
+          </section>
+
+          <section id="panel-students" class="panel space-y-5">
+            <div>
+              <h2 class="text-2xl font-extrabold">My students</h2>
+              <p class="text-slate-500 mt-1">
+                Students who have requested or booked your lessons.
+              </p>
+            </div>
+            <div class="bg-white border rounded-2xl p-5">
+              <input
+                id="studentSearch"
+                class="field max-w-md"
+                placeholder="Search students..."
+                oninput="renderStudents()"
+              />
+              <div id="studentList" class="mt-5"></div>
+            </div>
+          </section>
+
+          <section id="panel-subjects" class="panel space-y-5">
+            <div>
+              <h2 class="text-2xl font-extrabold">Subjects I teach</h2>
+              <p class="text-slate-500 mt-1">
+                Select all subjects you are comfortable tutoring.
+              </p>
+            </div>
+            <div class="bg-white border rounded-2xl p-5 md:p-7">
+              <form id="subjectsForm">
+                <div
+                  id="subjectOptions"
+                  class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3"
+                ></div>
+                <div class="mt-6">
+                  <label class="font-bold text-sm">Add another subject</label>
+                  <div class="flex gap-2 mt-2">
+                    <input
+                      id="customSubject"
+                      class="field"
+                      placeholder="e.g. Information Technology"
+                    /><button
+                      type="button"
+                      onclick="addSubject()"
+                      class="btn btn-light"
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+                <button class="btn btn-primary mt-6" type="submit">
+                  Save my subjects
+                </button>
+              </form>
+            </div>
+          </section>
+
+          <section id="panel-availability" class="panel space-y-5">
+            <div>
+              <h2 class="text-2xl font-extrabold">Availability and schedule</h2>
+              <p class="text-slate-500 mt-1">
+                Tell students when you are usually available for lessons.
+              </p>
+            </div>
+            <div class="bg-white border rounded-2xl p-5 md:p-7">
+              <form id="availabilityForm" class="space-y-5">
+                <div>
+                  <label class="font-bold text-sm">Available days</label>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Monday" />
+                      Monday</label
+                    >
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Tuesday" />
+                      Tuesday</label
+                    >
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Wednesday" />
+                      Wednesday</label
+                    >
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Thursday" />
+                      Thursday</label
+                    >
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Friday" />
+                      Friday</label
+                    >
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Saturday" />
+                      Saturday</label
+                    >
+                    <label class="border rounded-xl p-3 flex gap-2 items-center"
+                      ><input type="checkbox" name="days" value="Sunday" />
+                      Sunday</label
+                    >
+                  </div>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-bold text-sm">Usual start time</label
+                    ><input
+                      id="startTime"
+                      type="time"
+                      class="field mt-2"
+                      value="09:00"
+                    />
+                  </div>
+                  <div>
+                    <label class="font-bold text-sm">Usual end time</label
+                    ><input
+                      id="endTime"
+                      type="time"
+                      class="field mt-2"
+                      value="17:00"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label class="font-bold text-sm">Lesson format</label
+                  ><select id="format" class="field mt-2">
+                    <option>Online</option>
+                    <option>In person</option>
+                    <option>Online and in person</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" type="submit">
+                  Save availability
+                </button>
+                <p id="availabilityMessage" class="text-sm text-green-700"></p>
+              </form>
+              <p class="text-xs text-slate-400 mt-5">
+                This demo records your usual availability. It does not yet
+                prevent overlapping bookings or synchronise a live calendar.
+              </p>
+            </div>
+          </section>
+
+          <section id="panel-profile" class="panel space-y-5">
+            <div>
+              <h2 class="text-2xl font-extrabold">Tutor profile</h2>
+              <p class="text-slate-500 mt-1">
+                Help students understand your experience and teaching style.
+              </p>
+            </div>
+            <div class="bg-white border rounded-2xl p-5 md:p-7">
+              <form id="profileForm" class="space-y-5">
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="font-bold text-sm">Full name *</label
+                    ><input
+                      id="tutorName"
+                      required
+                      class="field mt-2"
+                      placeholder="Your full name"
+                    />
+                  </div>
+                  <div>
+                    <label class="font-bold text-sm">Email address *</label
+                    ><input
+                      id="tutorEmail"
+                      required
+                      type="email"
+                      class="field mt-2"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label class="font-bold text-sm">Hourly rate (R) *</label
+                    ><input
+                      id="tutorRate"
+                      required
+                      type="number"
+                      min="0"
+                      class="field mt-2"
+                      value="200"
+                    />
+                  </div>
+                  <div>
+                    <label class="font-bold text-sm">Experience</label
+                    ><select id="experience" class="field mt-2">
+                      <option>New tutor</option>
+                      <option>1–2 years</option>
+                      <option>3–5 years</option>
+                      <option>6+ years</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="font-bold text-sm">Qualification</label
+                    ><input
+                      id="qualification"
+                      class="field mt-2"
+                      placeholder="e.g. BSc, BEd, currently studying"
+                    />
+                  </div>
+                  <div>
+                    <label class="font-bold text-sm">Teaching level</label
+                    ><select id="level" class="field mt-2">
+                      <option>Primary school</option>
+                      <option>High school</option>
+                      <option>University</option>
+                      <option>All levels</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="font-bold text-sm"
+                    >About you and your teaching style</label
+                  ><textarea
+                    id="tutorBio"
+                    rows="5"
+                    maxlength="700"
+                    class="field mt-2"
+                    placeholder="Tell students about your background, approach, and what they can expect."
+                  ></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit">
+                  Save tutor profile</button
+                ><span
+                  id="profileMessage"
+                  class="text-sm text-green-700 ml-3"
+                ></span>
+              </form>
+            </div>
+          </section>
+
+          <footer
+            class="text-xs text-slate-400 pt-6 pb-2 flex flex-wrap justify-between gap-2"
+          >
+            <span>© <span id="year"></span> LearnHub. All rights reserved.</span
+            ><span>Tutor Portal · Demo version</span>
+          </footer>
+        </div>
+      </main>
+    </div>
+    <script src="/static/script.js"></script>
+  </body>
+</html>

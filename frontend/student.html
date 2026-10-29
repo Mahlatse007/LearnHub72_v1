@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnHub | Student Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    .nav-link { padding:10px 13px; border-radius:10px; color:#64748b; font-weight:700; font-size:14px; }
+    .nav-link:hover,.nav-link.active { background:#eef2ff; color:#4f46e5; }
+    .field { width:100%; padding:11px 13px; border:1px solid #e2e8f0; border-radius:10px; outline:none; background:white; }
+    .field:focus { border-color:#818cf8; box-shadow:0 0 0 3px #eef2ff; }
+    .btn { padding:11px 15px; border-radius:10px; font-weight:700; cursor:pointer; }
+    .btn-primary { background:#4f46e5; color:white; }
+    .btn-primary:hover { background:#4338ca; }
+    .btn-light { background:#eef2ff; color:#4338ca; }
+    .section { display:none; }
+    .section.active { display:block; }
+    .modal { display:none; }
+    .modal.open { display:flex; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between gap-4">
+    <a href="#" class="flex items-center gap-3 shrink-0" onclick="showSection('find');return false;">
+      <div class="w-11 h-11 rounded-2xl bg-indigo-600 text-white grid place-items-center"><i data-lucide="graduation-cap"></i></div>
+      <div><div class="text-xl font-extrabold tracking-tight">Learn<span class="text-indigo-600">Hub</span></div><div class="text-xs text-slate-400">Student portal</div></div>
+    </a>
+    <nav class="hidden md:flex items-center gap-1">
+      <button class="nav-link active" data-section="find">Find a tutor</button>
+      <button class="nav-link" data-section="bookings">My sessions</button>
+      <button class="nav-link" data-section="profile">My profile</button>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button onclick="showSection('bookings')" class="relative p-2 rounded-xl hover:bg-slate-100" aria-label="My bookings"><i data-lucide="calendar-days"></i><span id="bookingCount" class="absolute -top-1 -right-1 text-xs bg-indigo-600 text-white rounded-full min-w-5 h-5 px-1 grid place-items-center">0</span></button>
+      <div id="studentAvatar" class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center font-extrabold">S</div>
+      <button class="md:hidden p-2" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" aria-label="Open menu"><i data-lucide="menu"></i></button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="hidden md:hidden border-t p-3 bg-white flex gap-2">
+    <button class="nav-link active" data-section="find">Find a tutor</button>
+    <button class="nav-link" data-section="bookings">My sessions</button>
+    <button class="nav-link" data-section="profile">My profile</button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 md:px-8 py-7 md:py-10">
+
+  <section id="section-find" class="section active">
+    <div class="rounded-3xl overflow-hidden bg-gradient-to-r from-indigo-700 via-indigo-600 to-violet-600 text-white p-6 md:p-10">
+      <div class="max-w-2xl">
+        <div class="inline-flex gap-2 items-center bg-white/15 rounded-full px-3 py-1.5 text-sm font-semibold"><i data-lucide="sparkles" size="16"></i> Your learning journey starts here</div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight mt-5">Find your tutor.<br>Reach your potential.</h1>
+        <p class="text-indigo-100 mt-4 max-w-xl">Discover tutors who fit your subjects, learning goals, budget, and schedule.</p>
+        <button onclick="document.getElementById('tutorSearch').focus();document.getElementById('tutorDirectory').scrollIntoView({behavior:'smooth'});" class="btn bg-white text-indigo-700 mt-6">Explore tutors <span class="ml-2">→</span></button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+      <div class="bg-white border rounded-2xl p-4"><div class="text-slate-400 text-sm">Available subjects</div><div class="text-2xl font-extrabold mt-1">16+</div></div>
+      <div class="bg-white border rounded-2xl p-4"><div class="text-slate-400 text-sm">Learning levels</div><div class="text-2xl font-extrabold mt-1">All stages</div></div>
+      <div class="bg-white border rounded-2xl p-4"><div class="text-slate-400 text-sm">Lesson formats</div><div class="text-2xl font-extrabold mt-1">Flexible</div></div>
+      <div class="bg-white border rounded-2xl p-4"><div class="text-slate-400 text-sm">Your sessions</div><div id="sessionStat" class="text-2xl font-extrabold mt-1">0</div></div>
+    </div>
+
+    <div id="tutorDirectory" class="mt-9">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-5">
+        <div><h2 class="text-2xl font-extrabold">Explore tutors</h2><p class="text-slate-500 mt-1">Choose a tutor who suits your learning needs.</p></div>
+        <div id="resultsCount" class="text-sm text-slate-500"></div>
+      </div>
+      <div class="bg-white border rounded-2xl p-4 md:p-5 mb-6">
+        <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          <div class="lg:col-span-2"><label class="block text-xs font-bold text-slate-500 mb-2">SEARCH</label><div class="relative"><i data-lucide="search" size="18" class="absolute left-3 top-3 text-slate-400"></i><input id="tutorSearch" class="field pl-10" placeholder="Tutor name or subject..." oninput="renderTutors()"></div></div>
+          <div><label class="block text-xs font-bold text-slate-500 mb-2">SUBJECT</label><select id="subjectFilter" class="field" onchange="renderTutors()"><option value="">All subjects</option></select></div>
+          <div><label class="block text-xs font-bold text-slate-500 mb-2">LEVEL</label><select id="levelFilter" class="field" onchange="renderTutors()"><option value="">All levels</option><option>Primary school</option><option>High school</option><option>University</option><option>All levels</option></select></div>
+          <div><label class="block text-xs font-bold text-slate-500 mb-2">FORMAT</label><select id="formatFilter" class="field" onchange="renderTutors()"><option value="">Any format</option><option>Online</option><option>In person</option><option>Online and in person</option></select></div>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 mt-4">
+          <label class="text-sm text-slate-500 whitespace-nowrap">Maximum hourly rate: <strong id="rateLabel">R500</strong></label>
+          <input id="rateFilter" type="range" min="50" max="500" step="25" value="500" class="w-full accent-indigo-600" oninput="document.getElementById('rateLabel').textContent='R'+this.value;renderTutors()">
+          <button class="text-sm font-bold text-indigo-600 whitespace-nowrap" onclick="resetFilters()">Clear filters</button>
+        </div>
+      </div>
+      <div id="tutorGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+    </div>
+  </section>
+
+  <section id="section-bookings" class="section space-y-6">
+    <div class="rounded-3xl bg-indigo-50 p-6 md:p-8">
+      <div class="text-sm font-bold text-indigo-600">YOUR LEARNING SCHEDULE</div>
+      <h1 class="text-3xl font-extrabold mt-2">My sessions</h1>
+      <p class="text-slate-600 mt-2">Review your requests and keep track of your lessons.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <button class="btn btn-light" onclick="setBookingFilter('all')">All sessions</button>
+      <button class="btn border bg-white" onclick="setBookingFilter('pending')">Pending</button>
+      <button class="btn border bg-white" onclick="setBookingFilter('confirmed')">Confirmed</button>
+      <button class="btn border bg-white" onclick="setBookingFilter('completed')">Completed</button>
+      <button class="btn border bg-white" onclick="setBookingFilter('declined')">Declined</button>
+    </div>
+    <div id="studentBookingList" class="bg-white border rounded-2xl overflow-hidden"></div>
+  </section>
+
+  <section id="section-profile" class="section space-y-6">
+    <div><h1 class="text-3xl font-extrabold">My student profile</h1><p class="text-slate-500 mt-2">Add your details so your tutor can prepare for your sessions.</p></div>
+    <div class="bg-white border rounded-2xl p-5 md:p-8 max-w-3xl">
+      <form id="studentProfileForm" class="space-y-5">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div><label class="text-sm font-bold">Full name *</label><input id="studentName" class="field mt-2" required placeholder="Your full name"></div>
+          <div><label class="text-sm font-bold">Email address *</label><input id="studentEmail" type="email" class="field mt-2" required placeholder="you@example.com"></div>
+          <div><label class="text-sm font-bold">Learning level</label><select id="studentLevel" class="field mt-2"><option>Primary school</option><option selected>High school</option><option>University</option><option>Other</option></select></div>
+          <div><label class="text-sm font-bold">Preferred lesson format</label><select id="studentFormat" class="field mt-2"><option>Online</option><option>In person</option><option>No preference</option></select></div>
+        </div>
+        <div><label class="text-sm font-bold">Learning goals or topics you need help with</label><textarea id="studentGoals" class="field mt-2" rows="4" placeholder="e.g. I need help preparing for my mathematics exam."></textarea></div>
+        <button class="btn btn-primary" type="submit">Save my profile</button><p id="studentProfileMessage" class="text-sm text-green-700"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="border-t mt-12 pt-6 pb-3 text-sm text-slate-400 flex flex-col sm:flex-row justify-between gap-2">
+    <span>© <span id="year"></span> LearnHub. All rights reserved.</span><span>Learn better. Grow further.</span>
+  </footer>
+</main>
+
+<!-- Booking modal -->
+<div id="bookingModal" class="modal fixed inset-0 z-50 bg-slate-900/60 items-center justify-center p-4">
+  <div class="bg-white rounded-3xl w-full max-w-xl max-h-[92vh] overflow-y-auto shadow-2xl">
+    <div class="p-5 md:p-7 border-b flex justify-between items-start gap-3">
+      <div><div class="text-sm font-bold text-indigo-600">BOOK A LESSON</div><h2 class="text-2xl font-extrabold mt-1">Schedule your session</h2><p class="text-sm text-slate-500 mt-1">Submit a request for your tutor to review.</p></div>
+      <button onclick="closeBooking()" class="p-2 rounded-xl hover:bg-slate-100" aria-label="Close booking"><i data-lucide="x"></i></button>
+    </div>
+    <form id="bookingForm" class="p-5 md:p-7 space-y-4">
+      <input type="hidden" id="selectedTutorId">
+      <div id="selectedTutorSummary" class="rounded-2xl bg-indigo-50 p-4"></div>
+      <div><label class="text-sm font-bold">Subject *</label><select id="bookingSubject" class="field mt-2" required></select></div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div><label class="text-sm font-bold">Date *</label><input id="bookingDate" type="date" class="field mt-2" required></div>
+        <div><label class="text-sm font-bold">Start time *</label><select id="bookingTime" class="field mt-2" required><option value="">Choose time</option><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option><option>15:00</option><option>16:00</option><option>17:00</option><option>18:00</option><option>19:00</option></select></div>
+      </div>
+      <div><label class="text-sm font-bold">Session duration</label><select id="bookingDuration" class="field mt-2"><option value="30">30 minutes</option><option value="60" selected>60 minutes</option><option value="90">90 minutes</option><option value="120">120 minutes</option></select></div>
+      <div><label class="text-sm font-bold">Lesson format *</label><select id="bookingFormat" class="field mt-2" required><option>Online</option><option>In person</option></select></div>
+      <div><label class="text-sm font-bold">What would you like help with?</label><textarea id="bookingMessage" rows="3" class="field mt-2" placeholder="Tell the tutor about your goals or the topic you need help with."></textarea></div>
+      <div id="bookingError" class="hidden text-sm text-red-600"></div>
+      <div class="flex gap-3 pt-2"><button type="button" onclick="closeBooking()" class="btn border flex-1">Cancel</button><button type="submit" class="btn btn-primary flex-1">Request session</button></div>
+      <p class="text-xs text-slate-400">A booking is a request until the tutor confirms it. This demo does not process payments.</p>
+    </form>
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
