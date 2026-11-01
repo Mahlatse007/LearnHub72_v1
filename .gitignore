@@ -4,7 +4,7 @@
 
 #Environment files
 .env
-.env/
+*.env/
 
 #Node modules
 node_modules/
@@ -16,8 +16,15 @@ node_modules/
 dist/
 
 #Virtual environment
-.venv/   
+.venv/
+.venv/
 
 #Python
 __pycache__/
+*.pyc
 *.py[cod]
+*.pyd
+
+.pytest_cache/
+.idea/
+*.sqlite3
